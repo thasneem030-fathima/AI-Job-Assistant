@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,send_from_directory
 from flask_cors import CORS
 import sqlite3
 import re
@@ -16,7 +16,10 @@ init_db()
 
 @app.route('/')
 def home():
-    return jsonify({"message": "API running"})
+    return send_from_directory('.','index.html')
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('.',path)
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
