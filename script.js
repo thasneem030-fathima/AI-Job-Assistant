@@ -3,7 +3,7 @@ async function analyze(){
  let job = document.getElementById('job').value;
  document.getElementById('result').innerHTML = "Analyzing... ⏳";
  try{
-  let res = await fetch('http://127.0.0.1:5000/analyze', {
+  let res = await fetch('https://ai-job-assistant-tbyl.onrender.com/analyze', {
    method:'POST',
    headers:{'Content-Type':'application/json'},
    body: JSON.stringify({resume:resume, job_description:job})
