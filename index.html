@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head><title>AI Job Assistant</title>
+<style>
+body{background:#0f172a;color:white;font-family:Arial;padding:20px}
+textarea{width:100%;height:120px;background:#1e293b;color:white;padding:10px;border-radius:8px;border:none}
+button{width:100%;padding:15px;background:#00e676;color:black;font-weight:bold;border:none;border-radius:8px;margin-top:15px;cursor:pointer}
+#result{margin-top:20px;padding:15px;background:#1e293b;border-radius:8px}
+</style>
+</head>
+<body>
+    <div id="loader">
+  <div class="logo-circle">AI</div>
+  <h2>Job Assistant</h2>
+  <p>Analyzing your dream job...</p>
+</div>
+
+<style>
+#loader{
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:#0f172a; display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  z-index:9999; color:white; font-family:sans-serif;
+  transition: opacity 0.8s;
+}
+.logo-circle{
+  width:80px; height:80px; background:#22c55e; border-radius:50%;
+  display:flex; justify-content:center; align-items:center;
+  font-size:36px; font-weight:bold; animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
+</style>
+
+<script>
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').style.opacity='0';
+    setTimeout(()=> document.getElementById('loader').style.display='none', 800);
+  }, 2000);
+});
+</script>
+<h2 style="color:#00e676">🤖 AI Job Application Assistant</h2>
+<h3>Your Resume</h3>
+<textarea id="resume">Python, Flask, 2 years experience</textarea>
+<h3>Job Description</h3>
+<textarea id="job">looking for python developer with flask</textarea>
+<button onclick="analyze()">Analyze Match 🔍</button>
+<div id="result">Result will appear here...</div>
+<script>
+async function analyze(){
+ let r=document.getElementById('resume').value;
+ let j=document.getElementById('job').value;
+ let res=document.getElementById('result');
+ res.innerHTML="Analyzing...";
+ try{
+  let resp=await fetch('http://127.0.0.1:5000/analyze',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({resume_text:r, job_description:j})
+  });
+  let d=await resp.json();
+  res.innerHTML=`<h3 style="color:#00e676">Score: ${d.score}%</h3><p><b>Matched:</b> ${d.matched_skills.join(', ')}</p><p><b>Missing:</b> ${d.missing_skills.join(', ')}</p><p>${d.suggestion}</p>`;
+ }catch(e){res.innerHTML="Error: "+e;}
+}
+</script>
+</body>
+</html>
